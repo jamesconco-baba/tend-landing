@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tend — Money, minus the noise.</title>
+<meta name="description" content="Tend is a calm, psychology-first money app. One honest 'safe to spend' number, judgment-free spend tracking, and a coach that's actually on your side." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --sand:#F6F2EB; --sand-deep:#EFE9DD; --surface:#FDFBF7;
+    --ink:#1F2421; --ink-soft:#4B544E; --ink-faint:#8A938C;
+    --sage:#3E5C4F; --sage-light:#5B7B6F; --sage-wash:#E5ECE7; --sage-wash-deep:#D2E0D8;
+    --clay:#C97B5A; --clay-wash:#F4E4DA; --gold:#D9A441; --gold-wash:#F6ECD6;
+    --line:#E4DDCF;
+    --display:'Fraunces',Georgia,serif;
+    --body:'DM Sans',-apple-system,system-ui,sans-serif;
+    --maxw:1140px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--body); background:var(--sand); color:var(--ink);
+    -webkit-font-smoothing:antialiased; line-height:1.55; overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--sage-wash-deep)}
+  :focus-visible{outline:2.5px solid var(--sage);outline-offset:3px;border-radius:4px}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  section{padding:96px 0}
+  .eyebrow{font-family:var(--body);font-weight:700;font-size:12px;letter-spacing:2px;color:var(--sage-light);text-transform:uppercase}
+  h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-0.02em;line-height:1.05;color:var(--ink)}
+  h1{font-size:clamp(40px,6.4vw,76px)}
+  h2{font-size:clamp(30px,4.4vw,50px);line-height:1.08}
+  h3{font-size:22px;font-weight:600}
+  p.lead{font-size:clamp(17px,1.9vw,20px);color:var(--ink-soft);line-height:1.6}
+
+  /* ---------- buttons ---------- */
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--body);font-weight:700;font-size:15.5px;
+    padding:15px 26px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:transform .18s ease,background .18s ease,box-shadow .18s ease}
+  .btn-primary{background:var(--sage);color:var(--surface);box-shadow:0 10px 24px -10px rgba(62,92,79,.55)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 30px -10px rgba(62,92,79,.6)}
+  .btn-ghost{background:transparent;color:var(--sage);border-color:var(--line)}
+  .btn-ghost:hover{background:var(--sage-wash);border-color:var(--sage-wash-deep)}
+  .btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+  .btn[aria-disabled="true"]:hover{transform:none;box-shadow:none}
+
+  /* ---------- nav ---------- */
+  nav{position:sticky;top:0;z-index:50;transition:background .25s ease,border-color .25s ease,backdrop-filter .25s ease;border-bottom:1px solid transparent}
+  nav.scrolled{background:rgba(246,242,235,.82);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:23px;letter-spacing:-0.02em}
+  .mark{width:34px;height:34px;border-radius:11px;background:var(--sage);display:grid;place-items:center;color:var(--surface);font-size:17px}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a.lnk{font-weight:500;font-size:15px;color:var(--ink-soft)}
+  .nav-links a.lnk:hover{color:var(--ink)}
+  @media(max-width:760px){.nav-links a.lnk{display:none}}
+
+  /* ---------- hero ---------- */
+  .hero{padding-top:64px;padding-bottom:60px}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .hero h1{margin:18px 0 0}
+  .hero .tagline{font-family:var(--display);font-style:italic;font-weight:400;color:var(--clay);font-size:clamp(20px,2.4vw,26px);margin-top:14px}
+  .hero p.lead{margin-top:22px;max-width:520px}
+  .hero-cta{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+  .hero-note{margin-top:18px;font-size:13.5px;color:var(--ink-faint)}
+  @media(max-width:880px){
+    .hero-grid{grid-template-columns:1fr;gap:14px;text-align:left}
+    .hero-visual{justify-self:center;margin-top:18px}
+  }
+
+  /* ---------- phone device ---------- */
+  .hero-visual{display:flex;justify-content:center;position:relative}
+  .glow{position:absolute;inset:-40px;background:radial-gradient(circle at 60% 40%,rgba(91,123,111,.22),transparent 62%);filter:blur(8px);z-index:0}
+  .device{position:relative;z-index:1;width:288px;border-radius:42px;padding:11px;background:#22281F;
+    box-shadow:0 40px 80px -30px rgba(31,36,33,.45),0 0 0 1px rgba(31,36,33,.06)}
+  .device .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:122px;height:26px;background:#22281F;border-radius:0 0 16px 16px;z-index:3}
+  .screen{background:var(--sand);border-radius:33px;overflow:hidden;height:580px;position:relative}
+  .screen-pad{padding:46px 18px 18px}
+
+  /* in-app components reused on the page */
+  .app-greet{font-family:var(--display);font-size:19px;font-weight:600}
+  .app-ident{font-size:12px;color:var(--sage-light);margin-bottom:14px}
+  .sts{border-radius:26px;padding:24px 22px;background:linear-gradient(135deg,var(--sage),var(--sage-light));color:#fff;box-shadow:0 16px 30px -16px rgba(62,92,79,.7)}
+  .sts .lbl{font-size:10px;font-weight:700;letter-spacing:1.4px;opacity:.82}
+  .sts .num{font-family:var(--display);font-size:50px;font-weight:600;letter-spacing:-1.5px;line-height:1.05;margin-top:4px}
+  .sts .sub{font-size:12.5px;opacity:.92;margin-top:2px}
+  .mini-row{display:flex;gap:10px;margin-top:13px}
+  .mini{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:13px}
+  .mini .cap{font-size:9.5px;font-weight:700;letter-spacing:1px;color:var(--ink-faint)}
+  .mini .big{font-family:var(--display);font-size:24px;font-weight:600;margin-top:3px}
+  .mini .sm{font-size:11px;color:var(--ink-faint)}
+  .tx{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:13px;margin-top:13px}
+  .dot{width:9px;height:9px;border-radius:50%}
+  .tx .nm{font-size:13.5px;font-weight:500}
+  .tx .mt{font-size:11px;color:var(--ink-faint)}
+  .tx .amt{margin-left:auto;font-weight:700;font-size:13.5px}
+  .tabbar{position:absolute;bottom:0;left:0;right:0;height:62px;background:var(--surface);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-around;font-size:17px;color:var(--ink-faint)}
+  .tabbar .plus{width:46px;height:46px;border-radius:50%;background:var(--sage);color:#fff;display:grid;place-items:center;font-size:26px;margin-top:-14px;box-shadow:0 8px 18px -8px rgba(62,92,79,.7)}
+  .tabbar .on{color:var(--sage)}
+
+  /* ---------- approach ---------- */
+  .approach{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .approach .head{max-width:720px;margin-bottom:54px}
+  .approach h2{margin:14px 0}
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  @media(max-width:760px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--sand);border:1px solid var(--line);border-radius:22px;padding:30px}
+  .card .tag{font-family:var(--body);font-weight:700;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--clay)}
+  .card h3{margin:12px 0 9px}
+  .card p{color:var(--ink-soft);font-size:15.5px}
+
+  /* ---------- feature rows ---------- */
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-bottom:34px}
+  .frow.flip .ftext{order:2}
+  .ftext .eyebrow{margin-bottom:14px;display:block}
+  .ftext h2{margin-bottom:16px}
+  .ftext p{color:var(--ink-soft);font-size:17px;max-width:460px}
+  .fvisual{display:flex;justify-content:center}
+  @media(max-width:880px){
+    .frow,.frow.flip{grid-template-columns:1fr;gap:30px}
+    .frow .ftext,.frow.flip .ftext{order:1}
+    .frow .fvisual{order:2}
+  }
+
+  /* small panels used as feature visuals */
+  .panel{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:24px;box-shadow:0 30px 60px -38px rgba(31,36,33,.4)}
+  .panel .ptitle{font-family:var(--display);font-size:20px;font-weight:600;margin-bottom:4px}
+  .panel .pcap{font-size:13px;color:var(--ink-faint);margin-bottom:18px}
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{border:1.5px solid var(--line);border-radius:999px;padding:9px 15px;font-size:13.5px;font-weight:500;color:var(--ink-soft)}
+  .pill.sel{color:#fff;border-color:transparent}
+  /* bars */
+  .bar{margin:14px 0}
+  .bar .bh{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:7px}
+  .bar .bh .bl{font-weight:500}.bar .bh .ba{font-weight:700}
+  .track{height:10px;border-radius:5px;background:var(--sand-deep);overflow:hidden}
+  .fill{height:10px;border-radius:5px}
+  .insight{background:var(--clay-wash);border:1px solid #EAD3C6;border-radius:18px;padding:18px;margin-top:6px}
+  .insight .ic{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--clay)}
+  .insight .it{font-family:var(--display);font-size:17px;line-height:1.35;margin-top:6px}
+  /* coach */
+  .chat{display:flex;flex-direction:column;gap:9px}
+  .msg{max-width:84%;padding:11px 15px;border-radius:18px;font-size:14.5px;line-height:1.45}
+  .msg.u{align-self:flex-end;background:var(--sage);color:#fff;border-bottom-right-radius:6px}
+  .msg.a{align-self:flex-start;background:var(--sand);border:1px solid var(--line);border-bottom-left-radius:6px}
+  /* goal */
+  .goal{margin-top:4px}
+  .goal .gh{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .goal .ge{font-size:26px}
+  .goal .gt{font-weight:700;font-size:15px}
+  .goal .gw{font-size:12px;color:var(--ink-faint)}
+  .gtrack{height:12px;border-radius:6px;background:var(--sand-deep);overflow:hidden}
+  .gfill{height:12px;border-radius:6px;background:var(--sage)}
+  .gfoot{display:flex;justify-content:space-between;margin-top:11px;font-size:13.5px;font-weight:700}
+  .gfoot .of{color:var(--ink-faint);font-weight:500}
+  .future{background:var(--sage-wash);border:1px solid var(--sage-wash-deep);border-radius:16px;padding:15px;margin-top:14px}
+  .future .fc{font-size:10.5px;font-weight:700;letter-spacing:1.2px;color:var(--sage)}
+  .future .fn{font-family:var(--display);font-size:30px;font-weight:600;color:var(--sage);margin-top:2px}
+  .future .ft{font-size:12px;color:var(--ink-soft)}
+
+  /* ---------- promises ---------- */
+  .promises{background:var(--sage);color:var(--sand)}
+  .promises h2{color:var(--surface)}
+  .promises .eyebrow{color:rgba(246,242,235,.7)}
+  .plist{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 40px;margin-top:40px}
+  @media(max-width:680px){.plist{grid-template-columns:1fr}}
+  .promise{display:flex;gap:14px;align-items:flex-start;padding:18px 0;border-top:1px solid rgba(246,242,235,.18)}
+  .promise .x{font-family:var(--display);font-size:22px;color:var(--gold);line-height:1}
+  .promise .pt{font-weight:700;font-size:16px;color:var(--surface)}
+  .promise .pp{font-size:14.5px;color:rgba(246,242,235,.78);margin-top:3px}
+
+  /* ---------- download ---------- */
+  .download{text-align:center}
+  .download .box{background:var(--surface);border:1px solid var(--line);border-radius:32px;padding:64px 32px;max-width:760px;margin:0 auto;box-shadow:0 40px 70px -45px rgba(31,36,33,.4)}
+  .download h2{margin:16px 0 10px}
+  .download p.lead{max-width:480px;margin:0 auto 32px}
+  .dl-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .store{display:inline-flex;align-items:center;gap:11px;padding:14px 22px;border-radius:16px;border:1.5px solid var(--line);background:var(--sand);font-weight:500;color:var(--ink)}
+  .store small{display:block;font-size:11px;color:var(--ink-faint);font-weight:500}
+  .store strong{font-size:16px;font-weight:700}
+  .store.live{background:var(--sage);border-color:var(--sage);color:#fff;transition:transform .18s ease}
+  .store.live:hover{transform:translateY(-2px)}
+  .store.live small{color:rgba(255,255,255,.75)}
+  .store.soon{opacity:.6;cursor:not-allowed}
+
+  /* ---------- footer ---------- */
+  footer{padding:54px 0 60px;border-top:1px solid var(--line)}
+  .foot-inner{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px}
+  .foot-tag{font-family:var(--display);font-style:italic;color:var(--ink-faint);margin-top:8px;font-size:15px}
+  .foot-links{display:flex;gap:24px;font-size:14px;color:var(--ink-soft)}
+  .foot-made{font-size:13px;color:var(--ink-faint);margin-top:18px}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+    .btn-primary:hover,.store.live:hover{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top"><span class="mark"><svg viewBox="0 0 100 100" width="20" height="20" style="display:block" aria-hidden="true"><path d="M50 55 C50 67 50 75 50 85" stroke="#F6F2EB" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M50 58 C40 46 40 27 50 19 C60 27 60 46 50 58 Z" fill="#A9C7B7" transform="rotate(-27 50 58)"/><path d="M50 58 C40 46 40 27 50 19 C60 27 60 46 50 58 Z" fill="#F6F2EB" transform="rotate(27 50 58)"/></svg></span> Tend</a>
+    <div class="nav-links">
+      <a class="lnk" href="#approach">The smart part</a>
+      <a class="lnk" href="#features">Features</a>
+      <a class="lnk" href="#promises">Our promise</a>
+      <a class="btn btn-primary" href="#download" style="padding:11px 20px;font-size:14.5px">Join the beta</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero wrap" id="top">
+  <div class="hero-grid">
+    <div class="reveal in">
+      <span class="eyebrow">Meet Tend</span>
+      <h1>Money, minus<br>the noise.</h1>
+      <p class="tagline">A money app that works with your head, not against it.</p>
+      <p class="lead">Most budgeting apps shout, shame, and bury you in charts until you stop opening them. Tend does the opposite — a calm, psychology-first money app built around how you actually think and spend, so the habit finally sticks.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#download">Join the TestFlight beta</a>
+        <a class="btn btn-ghost" href="#approach">See how it works</a>
+      </div>
+      <p class="hero-note">Free during beta · iPhone · No card, no catch.</p>
+        <p class="hero-note" style="color:var(--sage);font-weight:500;margin-top:6px">Works anywhere — prices show in your local currency, automatically.</p>
+    </div>
+
+    <div class="hero-visual reveal in">
+      <div class="glow"></div>
+      <div class="device" aria-hidden="true">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="screen-pad">
+            <div class="app-greet">Evening, Conco.</div>
+            <div class="app-ident">I'm becoming someone calm about money</div>
+            <div class="sts">
+              <div class="lbl">SAFE TO SPEND TODAY</div>
+              <div class="num m" data-usd="50">$50</div>
+              <div class="sub"><span class="m" data-usd="450">$450</span> left across 9 days</div>
+            </div>
+            <div class="mini-row">
+              <div class="mini"><div class="cap">STREAK</div><div class="big">12🔥</div><div class="sm">days tended</div></div>
+              <div class="mini"><div class="cap">TODAY</div><div class="big">✓</div><div class="sm">checked in</div></div>
+            </div>
+            <div class="tx">
+              <span class="dot" style="background:var(--gold)"></span>
+              <div><div class="nm">Lunch with Sam</div><div class="mt">Social · 2h ago</div></div>
+              <span class="amt m" data-usd="15">$15</span>
+            </div>
+          </div>
+          <div class="tabbar">
+            <span class="on">⌂</span><span>◷</span>
+            <span class="plus">+</span>
+            <span>✲</span><span>○</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- APPROACH / SMART PART -->
+<section class="approach" id="approach">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">The smart part</span>
+      <h2>Budgeting apps fail because they fight your brain.</h2>
+      <p class="lead">You don't overspend because you can't do the maths. You overspend because you're human — stressed, busy, tired, tempted. Tend is built around the four reasons money slips away, and quietly works with each one.</p>
+    </div>
+    <div class="cards">
+      <div class="card reveal">
+        <span class="tag">Present bias</span>
+        <h3>Tomorrow feels fake. Today feels real.</h3>
+        <p>We feel tonight's <span class="m" data-usd="40">$40</span> dinner far more than next year's savings. Tend makes the future tangible — one honest "safe to spend today," and a glimpse of what small choices become in five years.</p>
+      </div>
+      <div class="card reveal">
+        <span class="tag">Emotional spending</span>
+        <h3>Spending is a feeling, not a spreadsheet.</h3>
+        <p>Stress, boredom, joy, a hard day — that's what empties accounts. Tend lets you tag the feeling in three seconds, then shows you the pattern. No willpower required, just noticing.</p>
+      </div>
+      <div class="card reveal">
+        <span class="tag">Shame &amp; avoidance</span>
+        <h3>Guilt makes you close the app.</h3>
+        <p>Every app that scolds you teaches you to look away. Tend never does. The coach is plain and kind, a slip is just information, and the small wins are the ones worth celebrating.</p>
+      </div>
+      <div class="card reveal">
+        <span class="tag">The dopamine loop</span>
+        <h3>The same hooks — pointed somewhere better.</h3>
+        <p>Apps trained you to chase little hits. Tend borrows those loops — streaks, check-ins, quiet wins — and aims them at calm and progress instead of one more thing in the basket.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="wrap">
+  <!-- 1: safe to spend -->
+  <div class="frow reveal">
+    <div class="ftext">
+      <span class="eyebrow">Safe to spend</span>
+      <h2>One number you can trust.</h2>
+      <p>After rent, bills, and what you're putting aside, here's what's actually free to spend today. No mental maths, no nasty end-of-month surprise — just a number that breathes a little easier than your bank balance does.</p>
+    </div>
+    <div class="fvisual">
+      <div class="panel" aria-hidden="true">
+        <div class="sts">
+          <div class="lbl">SAFE TO SPEND TODAY</div>
+          <div class="num m" data-usd="50">$50</div>
+          <div class="sub"><span class="m" data-usd="450">$450</span> left across 9 days</div>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-faint);margin-top:16px">Your goals and bills are already set aside — so the number you see is the truth, not a trap.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2: emotional tagging + patterns -->
+  <div class="frow flip reveal">
+    <div class="ftext">
+      <span class="eyebrow">Feelings &amp; patterns</span>
+      <h2>Tag the feeling. See the pattern.</h2>
+      <p>Logging a spend takes seconds — and you mark how it felt. Over a week or two, Tend turns those tags into something you can actually see, like noticing most of your impulse buys happen late at night when you're wiped out.</p>
+    </div>
+    <div class="fvisual">
+      <div class="panel" aria-hidden="true">
+        <div class="ptitle">How did it feel?</div>
+        <div class="pcap">No wrong answer — this is the part that changes things.</div>
+        <div class="pill-row" style="margin-bottom:20px">
+          <span class="pill">Needed it</span>
+          <span class="pill sel" style="background:var(--clay)">Impulse</span>
+          <span class="pill">Joy</span>
+          <span class="pill">Stress</span>
+        </div>
+        <div class="insight">
+          <div class="ic">WHAT STANDS OUT</div>
+          <div class="it">Most of your non-essential spending rode in on stress — about 41%, usually in the evening.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3: the pause -->
+  <div class="frow reveal">
+    <div class="ftext">
+      <span class="eyebrow">The pause</span>
+      <h2>Beat the impulse, keep the money.</h2>
+      <p>Tempted by something? Park it for 24 hours before you buy. Most wants quietly fade by morning — and a want you let go of is money kept. The one feature that pays for itself the first time you use it.</p>
+    </div>
+    <div class="fvisual">
+      <div class="panel" aria-hidden="true">
+        <div class="ptitle">The pause</div>
+        <div class="pcap">Parked · still want it tomorrow?</div>
+        <div class="tx" style="margin-top:0">
+          <div><div class="nm">Wireless headphones</div><div class="mt m" data-usd="199" style="font-family:var(--display);font-size:18px;color:var(--ink)">$199</div></div>
+          <span class="pill" style="margin-left:auto;background:var(--gold-wash);border-color:var(--gold-wash);color:var(--gold);font-weight:700">7h to go</span>
+        </div>
+        <div class="tx">
+          <div><div class="nm">Third pair of trainers</div><div class="mt m" data-usd="95" style="font-family:var(--display);font-size:18px;color:var(--ink)">$95</div></div>
+          <span class="pill" style="margin-left:auto;background:var(--sage-wash);border-color:var(--sage-wash);color:var(--sage);font-weight:700">Let it go ✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4: coach -->
+  <div class="frow flip reveal">
+    <div class="ftext">
+      <span class="eyebrow">Your coach</span>
+      <h2>A coach who never makes you feel small.</h2>
+      <p>Ask anything — "can I afford this?", "why do I keep overspending?" — and get a calm, plain answer that already knows your numbers. No jargon, no lecture, no judgment. Just someone in your corner.</p>
+    </div>
+    <div class="fvisual">
+      <div class="panel" aria-hidden="true">
+        <div class="chat">
+          <div class="msg u">Can I afford a <span class="m" data-usd="60">$60</span> dinner this weekend?</div>
+          <div class="msg a">You can — you've got <span class="m" data-usd="50">$50</span> a day free and a little buffer this week. If you do, maybe go a touch lighter Sunday. No big deal either way.</div>
+          <div class="msg u">Why do I keep overspending on Fridays?</div>
+          <div class="msg a">Looks like Friday spends are mostly tagged "stress." That's not a flaw — it's a Friday. Want a small plan for the next one?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5: goals + future self -->
+  <div class="frow reveal">
+    <div class="ftext">
+      <span class="eyebrow">Goals &amp; future self</span>
+      <h2>Watch it grow.</h2>
+      <p>Give your money somewhere to go — a trip, a buffer, a big someday. What you set aside is held back from "safe to spend," so the number stays honest. And you can see what today's small choice quietly becomes over five years.</p>
+    </div>
+    <div class="fvisual">
+      <div class="panel" aria-hidden="true">
+        <div class="goal">
+          <div class="gh"><span class="ge">✈️</span><div><div class="gt">Japan, spring</div><div class="gw">the one I keep putting off</div></div></div>
+          <div class="gtrack"><div class="gfill" style="width:58%"></div></div>
+          <div class="gfoot"><span><span class="m" data-usd="1740">$1,740</span> <span class="of">of <span class="m" data-usd="3000">$3,000</span></span></span><span style="color:var(--sage)">+ <span class="m" data-usd="150">$150</span>/mo</span></div>
+        </div>
+        <div class="future">
+          <div class="fc">YOUR FUTURE SELF</div>
+          <div class="fn m" data-usd="9940">$9,940</div>
+          <div class="ft">Keep setting aside <span class="m" data-usd="150">$150</span> a month and that's roughly where you'll be in 5 years.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6: daily check-in -->
+  <div class="frow flip reveal">
+    <div class="ftext">
+      <span class="eyebrow">Daily check-in</span>
+      <h2>Tiny wins, every day.</h2>
+      <p>A ten-second check-in and a no-spend streak that makes showing up feel good. It's not about being perfect — it's about staying in touch with your money instead of hiding from it.</p>
+    </div>
+    <div class="fvisual">
+      <div class="panel" aria-hidden="true">
+        <div class="mini-row" style="margin-top:0">
+          <div class="mini"><div class="cap">STREAK</div><div class="big">12🔥</div><div class="sm">days tended</div></div>
+          <div class="mini"><div class="cap">NO-SPEND</div><div class="big">4</div><div class="sm">days this month</div></div>
+        </div>
+        <p style="font-family:var(--display);font-size:18px;line-height:1.35;margin-top:18px;color:var(--ink)">"Showing up is the whole habit. You're on a 12-day streak."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMISES -->
+<section class="promises" id="promises">
+  <div class="wrap">
+    <div class="reveal" style="max-width:680px">
+      <span class="eyebrow">Our promise</span>
+      <h2>What Tend will never do.</h2>
+      <p class="lead" style="color:rgba(246,242,235,.82);margin-top:14px">A money app should be on your side, full stop. Here's what that rules out.</p>
+    </div>
+    <div class="plist reveal">
+      <div class="promise"><span class="x">✕</span><div><div class="pt">Never sell your data</div><div class="pp">Your money is yours. We don't package it, share it, or sell it — not ever.</div></div></div>
+      <div class="promise"><span class="x">✕</span><div><div class="pt">Never run ads</div><div class="pp">No "you might like" credit cards. Nothing in here is trying to sell you something.</div></div></div>
+      <div class="promise"><span class="x">✕</span><div><div class="pt">Never shame you</div><div class="pp">A rough week is information, not a verdict. The tone stays kind, always.</div></div></div>
+      <div class="promise"><span class="x">✕</span><div><div class="pt">Never push you toward debt</div><div class="pp">No nudges to borrow, upgrade, or spend more than you have. The opposite, really.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section class="download" id="download">
+  <div class="wrap">
+    <div class="box reveal">
+      <span class="eyebrow">Get Tend</span>
+      <h2>Start tending today.</h2>
+      <p class="lead">Tend is in private beta on iPhone right now. Join the TestFlight and help shape the calmest money app there is.</p>
+      <div class="dl-row">
+        <a class="store live" href="https://testflight.apple.com/join/REPLACE-WITH-YOUR-CODE">
+           <span style="font-size:22px"></span>
+           <span><small>Beta now on</small><strong>TestFlight</strong></span>
+        </a>
+        <span class="store soon" aria-disabled="true">
+           <span style="font-size:22px"></span>
+           <span><small>Coming soon</small><strong>App Store</strong></span>
+        </span>
+      </div>
+      <p class="hero-note" style="margin-top:24px">Android on the way. Want a heads-up when it lands? <a href="mailto:hello@tendapp.com" style="color:var(--sage);font-weight:600">Drop us a line.</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot-inner">
+    <div>
+      <a class="brand" href="#top"><span class="mark"><svg viewBox="0 0 100 100" width="20" height="20" style="display:block" aria-hidden="true"><path d="M50 55 C50 67 50 75 50 85" stroke="#F6F2EB" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M50 58 C40 46 40 27 50 19 C60 27 60 46 50 58 Z" fill="#A9C7B7" transform="rotate(-27 50 58)"/><path d="M50 58 C40 46 40 27 50 19 C60 27 60 46 50 58 Z" fill="#F6F2EB" transform="rotate(27 50 58)"/></svg></span> Tend</a>
+      <div class="foot-tag">Money, minus the noise.</div>
+      <div class="foot-made">Made calm on purpose.</div>
+    </div>
+    <div class="foot-links">
+      <a href="#approach">The smart part</a>
+      <a href="#features">Features</a>
+      <a href="#download">Get the beta</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // nav background on scroll
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 24);
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  // gentle reveal on scroll
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduce){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+    },{threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+  }
+</script>
+<script>
+/* Universal currency: convert USD base figures to the visitor's local currency once on load. */
+(function(){
+  var REGION_CCY={US:'USD',GB:'GBP',IE:'EUR',DE:'EUR',FR:'EUR',IT:'EUR',ES:'EUR',NL:'EUR',PT:'EUR',GR:'EUR',AT:'EUR',BE:'EUR',FI:'EUR',LU:'EUR',SK:'EUR',SI:'EUR',EE:'EUR',LV:'EUR',LT:'EUR',CY:'EUR',MT:'EUR',
+    NG:'NGN',ZA:'ZAR',KE:'KES',GH:'GHS',EG:'EGP',TZ:'TZS',UG:'UGX',
+    IN:'INR',PK:'PKR',BD:'BDT',CA:'CAD',AU:'AUD',NZ:'NZD',JP:'JPY',CN:'CNY',HK:'HKD',KR:'KRW',
+    SG:'SGD',MY:'MYR',TH:'THB',ID:'IDR',PH:'PHP',VN:'VND',BR:'BRL',MX:'MXN',AR:'ARS',CL:'CLP',CO:'COP',
+    AE:'AED',SA:'SAR',QA:'QAR',TR:'TRY',IL:'ILS',CH:'CHF',SE:'SEK',NO:'NOK',DK:'DKK',PL:'PLN',CZ:'CZK',HU:'HUF',RO:'RON',RU:'RUB',UA:'UAH',
+    SN:'XOF',CI:'XOF',ML:'XOF',BJ:'XOF',BF:'XOF',NE:'XOF',TG:'XOF',GW:'XOF',MA:'MAD',
+    CM:'XAF',CF:'XAF',TD:'XAF',CG:'XAF',GQ:'XAF',GA:'XAF'};
+  /* Approximate mid-2026 rates (USD -> X). Illustrative only — update anytime. */
+  var RATES={USD:1,GBP:0.79,EUR:0.92,NGN:1550,ZAR:18.2,KES:129,GHS:15.3,EGP:48,TZS:2650,UGX:3750,
+    INR:83,PKR:278,BDT:118,CAD:1.37,AUD:1.51,NZD:1.64,JPY:157,CNY:7.2,HKD:7.8,KRW:1370,SGD:1.35,
+    MYR:4.7,THB:36,IDR:16200,PHP:58,VND:25400,BRL:5.5,MXN:18,ARS:900,CLP:950,COP:3950,AED:3.67,
+    SAR:3.75,QAR:3.64,TRY:32,ILS:3.7,CHF:0.88,SEK:10.6,NOK:10.7,DKK:6.9,PLN:3.95,CZK:23,HUF:360,RON:4.6,RUB:90,UAH:41,XOF:605,XAF:605,MAD:10};
+  var SYM={USD:'$',GBP:'\u00A3',EUR:'\u20AC',NGN:'\u20A6',ZAR:'R',KES:'KSh',GHS:'\u20B5',EGP:'E\u00A3',INR:'\u20B9',JPY:'\u00A5',CNY:'\u00A5',CAD:'$',AUD:'$',NZD:'$',BRL:'R$',MXN:'$',AED:'\u062F.\u0625',SAR:'\uFDFC',SGD:'$',XOF:'CFA',XAF:'FCFA',MAD:'DH'};
+  /* Timezone -> currency. The visitor's location is far more reliable than their
+     language (e.g. many Nigerian phones are set to English-UK / en-GB). */
+  var TZ_CCY={
+    'Africa/Lagos':'NGN','Africa/Johannesburg':'ZAR','Africa/Nairobi':'KES','Africa/Accra':'GHS','Africa/Cairo':'EGP',
+    'Africa/Dar_es_Salaam':'TZS','Africa/Kampala':'UGX','Africa/Casablanca':'MAD','Africa/El_Aaiun':'MAD',
+    'Africa/Abidjan':'XOF','Africa/Dakar':'XOF','Africa/Bamako':'XOF','Africa/Ouagadougou':'XOF','Africa/Niamey':'XOF','Africa/Lome':'XOF','Africa/Porto-Novo':'XOF','Africa/Bissau':'XOF',
+    'Africa/Douala':'XAF','Africa/Bangui':'XAF','Africa/Ndjamena':'XAF','Africa/Brazzaville':'XAF','Africa/Malabo':'XAF','Africa/Libreville':'XAF',
+    'Europe/London':'GBP',
+    'Europe/Paris':'EUR','Europe/Berlin':'EUR','Europe/Madrid':'EUR','Europe/Rome':'EUR','Europe/Amsterdam':'EUR','Europe/Dublin':'EUR','Europe/Lisbon':'EUR','Europe/Athens':'EUR','Europe/Vienna':'EUR','Europe/Brussels':'EUR','Europe/Helsinki':'EUR','Europe/Luxembourg':'EUR','Europe/Bratislava':'EUR','Europe/Ljubljana':'EUR','Europe/Tallinn':'EUR','Europe/Riga':'EUR','Europe/Vilnius':'EUR','Europe/Nicosia':'EUR','Europe/Malta':'EUR','Europe/Zagreb':'EUR',
+    'America/New_York':'USD','America/Chicago':'USD','America/Denver':'USD','America/Los_Angeles':'USD','America/Phoenix':'USD','America/Anchorage':'USD','America/Detroit':'USD','Pacific/Honolulu':'USD','America/Indiana/Indianapolis':'USD',
+    'America/Toronto':'CAD','America/Vancouver':'CAD','America/Edmonton':'CAD','America/Winnipeg':'CAD','America/Halifax':'CAD','America/St_Johns':'CAD',
+    'Australia/Sydney':'AUD','Australia/Melbourne':'AUD','Australia/Brisbane':'AUD','Australia/Perth':'AUD','Australia/Adelaide':'AUD','Pacific/Auckland':'NZD',
+    'Asia/Kolkata':'INR','Asia/Calcutta':'INR','Asia/Karachi':'PKR','Asia/Dhaka':'BDT','Asia/Tokyo':'JPY',
+    'Asia/Shanghai':'CNY','Asia/Chongqing':'CNY','Asia/Hong_Kong':'HKD','Asia/Seoul':'KRW','Asia/Singapore':'SGD',
+    'Asia/Kuala_Lumpur':'MYR','Asia/Kuching':'MYR','Asia/Bangkok':'THB','Asia/Jakarta':'IDR','Asia/Makassar':'IDR','Asia/Jayapura':'IDR','Asia/Manila':'PHP','Asia/Ho_Chi_Minh':'VND','Asia/Saigon':'VND',
+    'America/Sao_Paulo':'BRL','America/Mexico_City':'MXN','America/Argentina/Buenos_Aires':'ARS','America/Santiago':'CLP','America/Bogota':'COP',
+    'Asia/Dubai':'AED','Asia/Riyadh':'SAR','Asia/Qatar':'QAR','Europe/Istanbul':'TRY','Asia/Jerusalem':'ILS','Asia/Tel_Aviv':'ILS',
+    'Europe/Zurich':'CHF','Europe/Stockholm':'SEK','Europe/Oslo':'NOK','Europe/Copenhagen':'DKK','Europe/Warsaw':'PLN','Europe/Prague':'CZK','Europe/Budapest':'HUF','Europe/Bucharest':'RON','Europe/Moscow':'RUB','Europe/Kyiv':'UAH','Europe/Kiev':'UAH'
+  };
+  function detect(){
+    var loc=(navigator.languages&&navigator.languages[0])||navigator.language||'en-US';
+    var code=null;
+    // 1) Physical location via timezone — reflects where the visitor is, not what language they read in.
+    try{ var tz=Intl.DateTimeFormat().resolvedOptions().timeZone; if(tz&&TZ_CCY[tz]) code=TZ_CCY[tz]; }catch(e){}
+    // 2) Fall back to the region in the browser language.
+    if(!code){
+      var region='';
+      try{ region=(new Intl.Locale(loc)).region||''; }catch(e){ var p=loc.split('-'); if(p[1])region=p[1]; }
+      if(region) code=REGION_CCY[region.toUpperCase()];
+    }
+    return {locale:loc, code:code||'USD'};
+  }
+  function nice(v){
+    if(v>=1000){var d=Math.pow(10,Math.floor(Math.log10(v))-1);return Math.round(v/d)*d;}
+    if(v>=100)return Math.round(v/10)*10;
+    return Math.round(v);
+  }
+  // --- QA overrides: ?ccy=NGN forces a currency; ?locale=ja-JP simulates a visitor ---
+  var qp=new URLSearchParams(location.search);
+  var qLocale=qp.get('locale');
+  var qCcy=(qp.get('ccy')||'').toUpperCase();
+  var det=detect();
+  var locale=qLocale||det.locale, code=det.code;
+  if(qLocale){ try{ var rg=(new Intl.Locale(qLocale)).region; if(rg) code=REGION_CCY[rg.toUpperCase()]||code; }catch(e){} }
+  if(qCcy&&RATES[qCcy]) code=qCcy;
+  var rate=RATES[code]||1;
+  function fmt(usd){
+    var v=(code==='USD')?usd:nice(usd*rate);
+    try{return new Intl.NumberFormat(locale,{style:'currency',currency:code,maximumFractionDigits:0,currencyDisplay:'narrowSymbol'}).format(v);}
+    catch(e){ try{return new Intl.NumberFormat(locale,{style:'currency',currency:code,maximumFractionDigits:0}).format(v);}
+              catch(e2){return (SYM[code]||'$')+Math.round(v).toLocaleString();} }
+  }
+  var els=document.querySelectorAll('[data-usd]');
+  for(var i=0;i<els.length;i++){ var u=parseFloat(els[i].getAttribute('data-usd')); if(!isNaN(u)) els[i].textContent=fmt(u); }
+  if(qCcy||qLocale){
+    var bg=document.createElement('div');
+    bg.textContent='preview · '+code+(qLocale?(' · '+locale):'');
+    bg.style.cssText='position:fixed;left:12px;bottom:12px;z-index:9999;background:#1F2421;color:#F6F2EB;font:600 12px/1.2 system-ui,sans-serif;padding:8px 12px;border-radius:999px;opacity:.9';
+    document.body.appendChild(bg);
+  }
+})();
+</script>
+</body>
+</html>
