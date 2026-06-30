@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email confirmed · Tend</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--sage:#3E5C4F;--sage2:#5B7B6F;--sand:#F6F2EB;--surface:#FDFBF7;--ink:#1F2421;--ink2:#4B544E;--clay:#C97B5A;--line:#E4DDCF;--wash:#E5ECE7}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{font-family:'DM Sans',system-ui,sans-serif;background:radial-gradient(circle at 50% 30%,var(--wash),var(--sand) 60%);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:24px;min-height:100vh}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:28px;max-width:460px;width:100%;padding:48px 40px;text-align:center;box-shadow:0 40px 80px -50px rgba(31,36,33,.5)}
+  .mark{width:74px;height:74px;border-radius:22px;background:var(--sage);display:grid;place-items:center;margin:0 auto 26px}
+  .kick{font-weight:700;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--sage2);margin-bottom:10px}
+  .kick.clay{color:var(--clay)}
+  h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:40px;letter-spacing:-1px;line-height:1.05;margin-bottom:14px}
+  p{font-size:16px;line-height:1.5;color:var(--ink2)}
+  .btn{display:inline-block;margin-top:26px;background:var(--sage);color:var(--surface);text-decoration:none;font-weight:700;font-size:17px;padding:16px 34px;border-radius:999px}
+  .fine{font-size:13px;color:var(--ink2);opacity:.8;margin-top:18px}
+  .tagline{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--clay);font-size:18px;margin-top:34px}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 100 100" width="42" height="42" aria-hidden="true">
+        <path d="M50 55 C50 67 50 75 50 85" stroke="#F6F2EB" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <path d="M50 58 C40 46 40 27 50 19 C60 27 60 46 50 58 Z" fill="#A9C7B7" transform="rotate(-27 50 58)"/>
+        <path d="M50 58 C40 46 40 27 50 19 C60 27 60 46 50 58 Z" fill="#F6F2EB" transform="rotate(27 50 58)"/>
+      </svg>
+    </div>
+
+    <div id="ok">
+      <div class="kick">Email confirmed</div>
+      <h1>You're in.</h1>
+      <p>Your email is verified. Open Tend and pick up where you left off — calm money is waiting.</p>
+      <a class="btn" href="tend://">Open Tend</a>
+      <p class="fine">If nothing happens, just open the Tend app on your phone and sign in.</p>
+    </div>
+
+    <div id="err" style="display:none">
+      <div class="kick clay">Hmm</div>
+      <h1>That link didn't work.</h1>
+      <p id="errmsg">The link may have expired or already been used.</p>
+      <a class="btn" href="tend://">Open Tend</a>
+      <p class="fine">Open the app and request a fresh confirmation email from the sign-in screen.</p>
+    </div>
+
+    <div class="tagline">Money, minus the noise.</div>
+  </div>
+
+<script>
+  // Supabase returns auth errors as URL fragments/query params on the redirect.
+  (function(){
+    var raw = (location.hash || '').replace(/^#/, '') || location.search.replace(/^\?/, '');
+    var params = new URLSearchParams(raw);
+    if (params.get('error') || params.get('error_code') || params.get('error_description')) {
+      document.getElementById('ok').style.display = 'none';
+      document.getElementById('err').style.display = 'block';
+      var d = params.get('error_description');
+      if (d) document.getElementById('errmsg').textContent = decodeURIComponent(d.replace(/\+/g, ' '));
+    }
+  })();
+</script>
+</body>
+</html>
